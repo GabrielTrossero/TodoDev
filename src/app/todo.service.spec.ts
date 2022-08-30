@@ -3,13 +3,17 @@ import { TODOS } from "./test-data/todo.db";
 import { TodoService } from "./todo.service"
 
 describe('ToDoService', () => {
-    it('debería agregar una nueva tarea', () => {
-        //creo un objeto y llamo a la funcion log. Lo comentado es de la forma tradicional, y la 3er linea es de una forma independiente. (Por alguna razon no me anda estas pruebas)
-        //const logger = new LoggerService();
-        //spyOn(logger, 'log');
-        const logger = jasmine.createSpyObj('LoggerService', ['log']);
 
-        const todoService = new TodoService(new LoggerService());
+    let todoService: TodoService;
+    let loggerSpy: any;
+
+    //módulo que se ejecuta antes de las pruebas
+    beforeEach(() => {
+        loggerSpy = jasmine.createSpyObj('LoggerService', ['log']); //simulo la creacion de un servico
+        todoService = new TodoService(loggerSpy);
+    })
+
+    it('debería agregar una nueva tarea', () => {
         todoService.add({ autor: 'PruebaAutor', titulo: 'PruebaTitulo', descripcion: 'PruebaDescripcion' });
 
         //acá empezamos a realizar las pruebas
@@ -19,13 +23,10 @@ describe('ToDoService', () => {
         expect(todoService.todos[0].titulo).toEqual('PruebaTitulo', 'El título debería ser "PruebaTitulo"');
 
         //para controlar la cantidad de veces que se llama a la funcion logger.log
-        expect(logger.log).toHaveBeenCalledTimes(0);
+        expect(loggerSpy.log).toHaveBeenCalledTimes(1);
     });
 
     it('debería borrar una tarea', () => {
-        const logger = jasmine.createSpyObj('LoggerService', ['log']);
-        const todoService = new TodoService(logger);
-
         todoService.todos = TODOS; //importo un array con info
 
         todoService.delete(2); //borro la tarea id=2
