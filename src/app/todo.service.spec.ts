@@ -1,4 +1,5 @@
 import { LoggerService } from "./logger.service"
+import { TODOS } from "./test-data/todo.db";
 import { TodoService } from "./todo.service"
 
 describe('ToDoService', () => {
@@ -20,4 +21,16 @@ describe('ToDoService', () => {
         //para controlar la cantidad de veces que se llama a la funcion logger.log
         expect(logger.log).toHaveBeenCalledTimes(0);
     });
+
+    it('debería borrar una tarea', () => {
+        const logger = jasmine.createSpyObj('LoggerService', ['log']);
+        const todoService = new TodoService(logger);
+
+        todoService.todos = TODOS; //importo un array con info
+
+        todoService.delete(2); //borro la tarea id=2
+
+        expect(todoService.todos.length).toBe(2, 'El numero de tareas debería ser 2'); //compruebo largo del array
+        expect(todoService.todos[1].autor).toEqual('Sara'); //ahora en la posicion 2 debería estar el id=3
+    })
 })
