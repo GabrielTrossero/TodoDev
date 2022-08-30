@@ -1,3 +1,4 @@
+import { TestBed } from "@angular/core/testing";
 import { LoggerService } from "./logger.service"
 import { TODOS } from "./test-data/todo.db";
 import { TodoService } from "./todo.service"
@@ -10,7 +11,18 @@ describe('ToDoService', () => {
     //módulo que se ejecuta antes de las pruebas
     beforeEach(() => {
         loggerSpy = jasmine.createSpyObj('LoggerService', ['log']); //simulo la creacion de un servico
-        todoService = new TodoService(loggerSpy);
+
+        //manera incorrecta:
+        //todoService = new TodoService(loggerSpy);
+
+        //manera correcta de generar una instancia de un servicio
+        TestBed.configureTestingModule({
+            providers: [
+                TodoService,
+                { provide: LoggerService, useValue: loggerSpy }
+            ]
+        });
+        todoService = TestBed.inject(TodoService);
     })
 
     it('debería agregar una nueva tarea', () => {
