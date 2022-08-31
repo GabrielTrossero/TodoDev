@@ -52,7 +52,7 @@ describe('ToDoService', () => {
         expect(todoService.todos[1].autor).toEqual('Sara'); //ahora en la posicion 2 debería estar el id=3
     });
 
-    it('debería traer todas las tareas', () => {
+    it('debería recuperar todas las tareas', () => {
         todoService.getAll().subscribe(todos => {
             expect(todos).toBeTruthy('No existen las tareas');
             expect(todos.length).toBe(3, 'La longitud debería ser de 3 tareas');
@@ -64,4 +64,19 @@ describe('ToDoService', () => {
         expect(req.request.method).toBe('GET');
         req.flush(TODOS); //definimos todos los datos que va a recibir la llamada de arriba (subscribe)
     });
+
+    it('debería recuperar una única tarea', () => {
+        todoService.getById(2).subscribe(todo => {
+            expect(todo).toBeTruthy('No existe la tarea');
+            expect(todo.id).toBe(2, 'El id de la tarea debe ser 2');
+        });
+
+        const req = httpTestingController.expectOne('http://localhost:3000/api/todos/2');
+        expect(req.request.method).toBe('GET');
+        req.flush(TODOS[1]);
+    });
+
+    afterEach(() => { //se ejecuta despues de cada una de las pruebas
+        httpTestingController.verify(); //comprobar las peticiones
+    })
 })
