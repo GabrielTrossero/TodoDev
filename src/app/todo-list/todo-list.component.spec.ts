@@ -37,5 +37,20 @@ describe('TodoListComponent', () => {
 
         expect(cards).toBeTruthy('no se pueden recuperar las cards');
         expect(cards.length).toBe(3, 'deberían ser 3 cards');
+    });
+
+    it('debería mostrar la primera tarea', () => {
+        component.todos = TODOS;
+        fixture.detectChanges();
+
+        const todo = TODOS[0];
+
+        const card = el.query(By.css('.card:first-child')); //recupero la primer card
+        const titulo = card.query(By.css('.card-title')); //me devuelve todo el elemento h5
+        const descripcion = card.query(By.css('.card-text'));
+
+        expect(card).toBeTruthy('La card debería existir');
+        expect(titulo.nativeElement.textContent).toBe(todo.titulo, 'El título debe coincidir'); //del h5 saco solo el título y lo comparo
+        expect(descripcion.nativeElement.textContent).toBe(todo.descripcion, 'La descripción debe coincidir');
     })
 })
